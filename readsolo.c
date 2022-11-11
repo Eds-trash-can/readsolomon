@@ -63,6 +63,7 @@ int readhex(unsigned char* out, int maxn) {
     char buf[516];
     int i;
     char* ret = fgets(buf, maxn*2, stdin);
+    printf("ret: %c\n", *ret);
     if (!ret) return 0;
     
     const char* eos = strchr(buf, '\n');
@@ -93,7 +94,7 @@ void writehex(unsigned char* out, int n) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
+	   if (argc < 2) {
         fprintf(stderr, "Usage: reedsolomon {encode|decode} [--hex]\n");
         fprintf(stderr, "/* Reed Solomon Coding for glyphs\n"
             " * Copyright Henry Minsky (hqm@alum.mit.edu) 1991-2009\n"
@@ -105,15 +106,14 @@ int main(int argc, char* argv[]) {
     
     int hexmode = 0;
     if (argc >= 3 && !strcmp(argv[2], "--hex")) hexmode = 1;
-    
+
     if(getenv("DEBUG")) DEBUG=1;
     
     initialize_ecc ();
-    
+   
     int i;
     
-    if (!strcmp(argv[1], "encode")) {
-    
+    if (!strcmp(argv[1], "encode")) {  
         for (;;) {
             if (!hexmode) {
                 char* ret = fgets((char*)msg, sizeof(msg), stdin);
@@ -129,12 +129,13 @@ int main(int argc, char* argv[]) {
             encode_data(msg, n, codeword);
             
             writehex(codeword, n+NPAR);
+            printf("\n");
             fflush(stdout);
         }
         
     } else
     if (!strcmp(argv[1], "decode")) {
-        for(;;) {
+         for(;;) {
             n = readhex(codeword, sizeof(codeword)) - NPAR;
             
             if (n==-NPAR) return 0;
@@ -156,6 +157,7 @@ int main(int argc, char* argv[]) {
                 writehex(codeword, n);
             } else {
                 fwrite(codeword, 1, n, stdout);
+                fflush(stdout);
             }
             fflush(stdout);
         }

@@ -27,6 +27,7 @@ TEST_PROGS = example
 TARGETS = $(TARGET_LIB) $(TEST_PROGS)
 
 all: $(TARGETS)
+	gcc -o readsolomon readsolo.c -L. -lecc
 
 $(TARGET_LIB): $(LIB_OBJS)
 	$(RM) $@
